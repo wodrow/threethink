@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<script src="http://cdn.bootcss.com/jquery/1.11.2/jquery.min.js"></script>
+	<title>solar system</title>
+</head>
+<body>
+	<canvas id="canvas" width="1000" height="1000" style="background:#000;">your bower cannot support canvas</canvas>
+	<script>
+	var canvas = $("#canvas")[0]
+	var cxt = canvas.getContext('2d')
+
+	var time = 0
+	function draw () {
+		cxt.clearRect(0,0,1000,1000)
+		// track
+		cxt.beginPath()
+		cxt.lineWidth = 2
+		cxt.strokeStyle = "#fff"
+		cxt.arc(500,500,100,0,2*Math.PI,true)
+		cxt.stroke()
+		cxt.closePath()
+		// sun 
+		cxt.beginPath()
+		cxt.arc(500,500,20,0,2*Math.PI,true)
+		var sunColor = cxt.createRadialGradient(500,500,0,500,500,20)
+		sunColor.addColorStop(0,"#f00")
+		sunColor.addColorStop(1,"#f90")
+		cxt.fillStyle = sunColor
+		cxt.fill()
+		cxt.closePath()
+		// earth
+		cxt.save()
+		cxt.translate(500,500)
+		cxt.rotate((time*360/365)*Math.PI/180)
+		cxt.beginPath()
+		cxt.arc(0,-100,10,0,360*Math.PI/180,true)
+		var earthColor = cxt.createRadialGradient(0,-100,0,0,-100,10)
+		earthColor.addColorStop(0,"#78b1e8")
+		earthColor.addColorStop(1,"#050c12")
+		cxt.fillStyle = earthColor
+		cxt.fill()
+		cxt.closePath()
+		cxt.restore()
+		time += 1
+	}
+	setInterval(draw,10)
+	</script>
+</body>
+</html>

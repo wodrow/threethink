@@ -1,0 +1,58 @@
+<block name="header">
+	<style>
+		body { padding-top: 50px; }
+	</style>
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container-fluid">
+			<!-- Brand and toggle get grouped for better mobile display -->
+			<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+		        <span class="sr-only">Toggle navigation</span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		     </button>
+				<a class="navbar-brand" href="{:U('Index/index')}"><!-- <img alt="Brand" src="..."> --><span class="glyphicon glyphicon-star" aria-hidden="true"></span></a>
+			</div>
+
+			<!-- Collect the nav links, forms, and other content for toggling -->
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+				<ul class="nav navbar-nav">
+					<?php foreach ($list_modules as $key => $value): ?>
+						<li class="<?php echo (CONTROLLER_NAME==$value[url])?'active':''; ?>">
+							<a href="{:U($value[url].'/index')}">{$value[name]}</a>
+						</li>
+					<?php endforeach; ?>
+				</ul>
+				
+				<ul class="nav navbar-nav navbar-right">
+					<li>
+						<a class="hidden-sm" href="http://www.bootcss.com/" title="在线手册" target="_blank">Bootstrap</a>
+					</li>
+					<li>
+						<a class="hidden-sm" href="http://ad.topthink.com/api/go/ad_581f19c46efcfbda" title="在线手册" target="_blank">ThinkPHP</a>
+					</li>
+					<li>
+						<a class="hidden-sm" href="{:C('WEB_INDEX')}" title="index" target="_blank">首页</a>
+					</li>
+					<li class="dropdown">
+						<a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+							用户名&nbsp;<span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu" role="menu">
+							<li>
+								<a href="#">Action</a>
+							</li>
+							<li class="divider"></li>
+							<li>
+								<a href="#">Separated link</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+			<!-- /.navbar-collapse -->
+		</div>
+		<!-- /.container-fluid -->
+	</nav>
+</block>

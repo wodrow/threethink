@@ -1,0 +1,205 @@
+
+<link href="__STATIC__/uploadify/uploadify.css" rel="stylesheet" type="text/css" />
+<script src="__STATIC__/uploadify/jquery.uploadify.js" type="text/javascript"></script>
+
+<script charset="utf-8" src="__STATIC__/kindeditor-4.1.10/kindeditor.js"></script>
+
+<?php if (I("get.add")): ?>
+<!-- 新增数据 -->
+<form class="form-horizontal" action="{:U('data_add?model_name='.$model_name)}" method="post" >
+	<?php foreach ($field_attrs as $k =>
+	$v): ?>
+	<?php if (($v[type]=='int'||$v[type]=='tinyint')&&$v[field_name]!='id'): ?>
+	<div class="form-group">
+		<label for="{$v[field_name]}" class="col-sm-2 control-label">{$v[alias]}</label>
+		<div class="col-sm-4">
+			<input type="text" class="form-control" name="{$v[field_name]}" placeholder="{$v[alias]}"></div>
+	</div>
+	<?php endif; ?>
+
+	<?php if ($v[type]=='varchar'): ?>
+	<div class="form-group">
+		<label for="{$v[field_name]}" class="col-sm-2 control-label">{$v[alias]}</label>
+		<div class="col-sm-4">
+			<input type="text" class="form-control" name="{$v[field_name]}" placeholder="{$v[alias]}"></div>
+	</div>
+	<?php endif; ?>
+
+	<?php if ($v[type]=='image'): ?>
+	<div class="form-group">
+		<label for="{$v[field_name]}" class="col-sm-2 control-label">{$v[alias]}</label>
+		<div class="col-sm-4">
+			<input type="hidden" name="{$v[field_name]}" placeholder="{$v[alias]}">
+			<input type="file" placeholder="{$v[alias]}" id="uploadify_{$v[field_name]}">
+			<!-- <p class="help-block">{$v[alias]}</p>
+		-->
+		<img src="__STATIC__/images/nop.jpg" class="img-responsive" id="show_image_{$v[field_name]}" alt="Responsive image">
+
+		<script>
+		jQuery(document).ready(function($) {
+			var model_name = "{$model_name}"
+			var file_id = "uploadify_"+"{$v[field_name]}"
+			$("#"+file_id).uploadify({
+				'formData'     : {
+					'timestamp' : '<?php echo $timestamp;?>',
+					'token'     : '<?php echo md5('unique_salt' . $timestamp);?>'
+				},
+				'swf'      : '__STATIC__/uploadify/uploadify.swf',
+				'buttonText' : 'SELECT',
+				'uploader' : '{:U("uploadify?model_name=".$model_name)}',
+				'successTimeout':1,
+				'onUploadSuccess' : imageUp_{$v[field_name]}
+			})
+			function  imageUp_{$v[field_name]}(file, data, response) {
+				// alert('The file ' + file.name + ' was successfully uploaded with a response of ' + response + ':' + data);
+				var data_save_route = '__UPLOADS__/images/'+model_name+"/"+file.name
+				$("input[name={$v[field_name]}]").val(data_save_route)
+				$("#show_image_{$v[field_name]}").attr('src',data_save_route)
+			}
+		});
+		</script>
+	</div>
+</div>
+<?php endif; ?>
+
+<?php if ($v[type]=='text'): ?>
+<div class="form-group">
+<label for="{$v[field_name]}" class="col-sm-2 control-label">{$v[alias]}</label>
+<div class="col-sm-8">
+	<textarea class="form-control" rows="24" name="{$v[field_name]}" placeholder="{$v[alias]}" id="ke_{$v[field_name]}"></textarea>
+	<!-- <p class="help-block">{$v[alias]}</p>
+-->
+<script>
+			var ke_id = "ke_" + "{$v[field_name]}"
+			KindEditor.ready(function(K){
+				K.create('#'+ke_id, {
+					
+				});
+			})
+		</script>
+</div>
+</div>
+<?php endif; ?>
+
+<?php endforeach; ?>
+<div class="form-group">
+<div class="col-sm-offset-2 col-sm-4">
+<button type="submit" class="btn btn-primary">提交</button>
+<button type="reset" class="btn btn-danger">重置</button>
+<button type="button" class="go_back btn btn-info">返回</button>
+</div>
+</div>
+</form>
+<!-- 新增数据 -->
+<hr>
+
+
+
+<?php elseif(I("get.edit")): ?>
+
+
+
+<!-- edit数据 -->
+<form class="form-horizontal" action="{:U('data_edit?model_name='.$model_name)}" method="post" >
+<?php foreach ($field_attrs as $k =>
+$v): ?>
+<input type="hidden" name="id" value="{$info[id]}">
+<?php if (($v[type]=='int'||$v[type]=='tinyint')&&$v[field_name]!='id'): ?>
+<div class="form-group">
+<label for="{$v[field_name]}" class="col-sm-2 control-label">{$v[alias]}</label>
+<div class="col-sm-4">
+<input type="text" class="form-control" name="{$v[field_name]}" placeholder="{$v[alias]}" value="{$info[$v[field_name]]}"></div>
+</div>
+<?php endif; ?>
+
+<?php if ($v[type]=='varchar'): ?>
+<div class="form-group">
+<label for="{$v[field_name]}" class="col-sm-2 control-label">{$v[alias]}</label>
+<div class="col-sm-4">
+<input type="text" class="form-control" name="{$v[field_name]}" placeholder="{$v[alias]}" value="{$info[$v[field_name]]}"></div>
+</div>
+<?php endif; ?>
+
+<?php if ($v[type]=='image'): ?>
+<div class="form-group">
+<label for="{$v[field_name]}" class="col-sm-2 control-label">{$v[alias]}</label>
+<div class="col-sm-4">
+<input type="file" placeholder="{$v[alias]}" id="uploadify_{$v[field_name]}">
+<!-- <p class="help-block">{$v[alias]}</p>
+-->
+<?php if ($info[$v[field_name]]): ?>
+<input type="hidden" name="{$v[field_name]}" placeholder="{$v[alias]}" value="{$info[$v[field_name]]}">
+<img src="{$info[$v[field_name]]}" class="img-responsive" id="show_image_{$v[field_name]}" alt="Responsive image">
+<?php else: ?>
+<input type="hidden" name="{$v[field_name]}" placeholder="{$v[alias]}" value="__STATIC__/images/nop.jpg" >
+<img src="__STATIC__/images/nop.jpg" class="img-responsive" id="show_image_{$v[field_name]}" alt="Responsive image">
+<?php endif; ?>
+
+<script>
+		jQuery(document).ready(function($) {
+			var model_name = "{$model_name}"
+			var file_id = "uploadify_"+"{$v[field_name]}"
+			$("#"+file_id).uploadify({
+				'formData'     : {
+					'timestamp' : '<?php echo $timestamp;?>',
+					'token'     : '<?php echo md5('unique_salt' . $timestamp);?>'
+				},
+				'swf'      : '__STATIC__/uploadify/uploadify.swf',
+				'buttonText' : 'SELECT',
+				'uploader' : '{:U("uploadify?model_name=".$model_name)}',
+				'successTimeout':1,
+				'onUploadSuccess' : imageUp_{$v[field_name]}
+			})
+			function  imageUp_{$v[field_name]}(file, data, response) {
+				// alert('The file ' + file.name + ' was successfully uploaded with a response of ' + response + ':' + data);
+				var data_save_route = '__UPLOADS__/images/'+model_name+"/"+file.name
+				$("input[name={$v[field_name]}]").val(data_save_route)
+				$("#show_image_{$v[field_name]}").attr('src',data_save_route)
+			}
+		});
+		</script>
+</div>
+</div>
+<?php endif; ?>
+
+<?php if ($v[type]=='text'): ?>
+<div class="form-group">
+<label for="{$v[field_name]}" class="col-sm-2 control-label">{$v[alias]}</label>
+<div class="col-sm-8">
+<textarea class="form-control" rows="24" name="{$v[field_name]}" placeholder="{$v[alias]}" id="ke_{$v[field_name]}">{$info[$v[field_name]]}</textarea>
+<!-- <p class="help-block">{$v[alias]}</p>
+-->
+<script>
+			var ke_id = "ke_" + "{$v[field_name]}"
+			KindEditor.ready(function(K){
+				K.create('#'+ke_id, {
+					
+				});
+			})
+		</script>
+</div>
+</div>
+<?php endif; ?>
+
+<?php endforeach; ?>
+<div class="form-group">
+<div class="col-sm-offset-2 col-sm-4">
+<button type="submit" class="btn btn-primary">提交</button>
+<button type="reset" class="btn btn-danger">重置</button>
+<button type="button" class="go_back btn btn-info">返回</button>
+</div>
+</div>
+</form>
+<!-- edit数据 -->
+<hr>
+<?php endif; ?>
+
+<script>
+jQuery(document).ready(function($) {
+	$("button.go_back").on('click', function(event) {
+		event.preventDefault();
+		var a = "{$_SERVER['HTTP_REFERER']}"
+		location.href = a;
+	});
+});
+</script>

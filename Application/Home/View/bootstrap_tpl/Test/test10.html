@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>test10</title>
+	<script src="http://cdn.bootcss.com/jquery/1.11.2/jquery.min.js"></script>
+</head>
+<body>
+	<canvas id="demo" width="500" height="500" style="border:1px solid red"></canvas>
+	<script>
+	var canvas = $("#demo")[0]
+	var cxt = canvas.getContext("2d")
+
+	var flag = 0 // check mouse on
+	canvas.onmousedown = function (e) {
+		e = window.event||e
+		var X = e.pageX - this.offsetLeft
+		var Y = e.pageY - this.offsetTop
+		cxt.beginPath()
+		cxt.moveTo(X,Y)
+		flag = 1
+	}
+	canvas.onmousemove = function (e){
+		e = window.event||e
+		var X = e.pageX - this.offsetLeft
+		var Y = e.pageY - this.offsetTop
+		if (flag) {
+			cxt.lineTo(X,Y)
+			cxt.stroke()
+		}
+	}
+	canvas.onmouseup = function (e) {
+		flag = 0
+		cxt.closePath()
+	}
+	canvas.onmouseout = function (e) {
+		flag = 0
+	}
+	</script>
+</body>
+</html>

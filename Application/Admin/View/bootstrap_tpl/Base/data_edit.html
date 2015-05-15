@@ -1,0 +1,35 @@
+<extend name="Layout:ly1"/>
+
+<block name="body">
+
+	<!-- 路径导航  -->
+	<ol class="breadcrumb">
+		<li>
+			<a href="{:U($_module[url].'/index')}">{$_module[name]}</a>
+		</li>
+		
+		<?php foreach($parent_menus as $k => $v): ?>
+			<li>
+				<a>{$v[name]}</a>
+			</li>
+		<?php endforeach; ?>
+		<li>
+			<a>编辑</a>
+		</li>
+		
+		<li class="pull-right">
+			<a href="{$_SERVER['HTTP_REFERER'] }">返回</a>
+		</li>
+	</ol>
+	<hr>
+	<!-- 路径导航  -->
+
+	<!-- 修改数据 -->
+	<include file="Public:data_add_save" />
+	<!-- 修改数据 -->
+
+	<!-- 版权信息 -->
+	<include file="Public:blockquote" />
+	<!-- 版权信息 -->
+
+</block>

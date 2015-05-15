@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>test8</title>
+	<script src="http://cdn.bootcss.com/jquery/1.11.2/jquery.min.js"></script>
+</head>
+<body>
+	<canvas id="canvas" width="1000" height="1000" style="background:#000000">your bower cannot support canvas</canvas>
+	<script>
+	var canvas = $("#canvas")[0]
+	var cxt = canvas.getContext("2d")
+
+	var countTime = 0
+	//track
+	function drawTrack () {
+		for (var i = 0; i <= 8; i++) {
+			cxt.beginPath()
+			cxt.arc(500,500,(i+1)*50,0,360*Math.PI/180,true)
+			cxt.strokeStyle = "#fff"
+			cxt.stroke()
+			cxt.closePath()
+		}
+	}
+	
+	// planet
+	function Star (x,y,radius,cycle,sColor,eColor) {
+		this.x = x
+		this.y = y
+		this.radius = radius
+		this.cycle = cycle
+		this.sColor = sColor
+		this.eColor = eColor
+		this.fillColor = null
+		this.draw = function () {
+			cxt.save()
+			cxt.translate(500,500)
+			cxt.rotate(countTime*(360/(this.cycle*365))*Math.PI/180)
+			cxt.beginPath()
+			cxt.arc(this.x,this.y,this.radius,0,360*Math.PI/180,true)
+			this.fillColor = cxt.createRadialGradient(this.x,this.y,0,this.x,this.y,this.radius)
+			this.fillColor.addColorStop(0,this.sColor)
+			this.fillColor.addColorStop(1,this.eColor)
+			cxt.fillStyle = this.fillColor
+			cxt.fill()
+			cxt.closePath()
+			cxt.restore()
+			countTime += 1
+		}
+	}
+	function Sun(){
+		Star.call(this,0,0,20,1,"#f00","#f90")
+	}
+	function Mercury () {
+		Star.call(this,0,-50,10,87.70,"#A69697","#5C3E40")
+	}
+	function rotation () {
+		cxt.clearRect(0,0,1000,1000)
+		drawTrack()
+		var sun = new Sun()
+		var mercury = new Mercury()
+		sun.draw()
+		mercury.draw()
+	}
+	setInterval(rotation,10)
+	</script>
+</body>
+</html>

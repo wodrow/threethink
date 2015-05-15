@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>test11</title>
+	<script src="http://cdn.bootcss.com/jquery/1.11.2/jquery.min.js"></script>
+	<style>
+	*{padding:0;margin:0;list-style: none;}
+	body{background: #ABCDEF;}
+	button:hover{background: #ddd}
+	#header{width:900px;height: 80px;font-size: 40px;margin: 0 auto;text-align: center;line-height: 80px;}
+	#content{width: 880px;height: 550px;background: grey;margin: 0 auto;padding: 10px;}
+	#tool{height: 150px;text-align: center;}
+	#tool li{float:left;width:175px;height:140px;background: #ccc;border-right: 1px solid red}
+	#canvas{background: white;}
+	#canvas:hover{cursor: crosshair;}
+	#tool .toolbar li{float: left;width: auto;height: 30px;border-right: 0;}
+	#footer{width: 900px;height: 30px;margin: 0 auto;text-align: center;}
+	</style>
+</head>
+<body>
+	<header id="header">html5 online drawing board</header>
+	<section id="content">
+		<ul id="tool">
+			<li>
+				<h3>image</h3>
+				<hr>
+				<ul class="toolbar">
+					<li id="saveimg"><button>save image</button></li>
+					<li id="clearimg"><button>clear board</button></li>
+				</ul>
+			</li>
+			<li>
+				<h3>tools</h3>
+				<hr>
+				<ul class="toolbar">
+					<li id="means_brush" onclick="drawBrush(0)"><button>brush</button></li>
+					<li id="means_eraser" onclick="drawEraser(1)"><button>eraser</button></li>
+					<li id="means_paint" onclick="drawPaint(2)"><button>paint</button></li>
+					<li id="means_straw" onclick="drawStraw(3)"><button>straw</button></li>
+					<li id="means_text" onclick="drawText(4)"><button>text</button></li>
+					<li id="means_magnifier" onclick="drawMagnifier(5)"><button>magnifier</button></li>
+				</ul>
+			</li>
+			<li>
+				<h3>shape</h3>
+				<hr>
+				<ul class="toolbar">
+					<li
+					id="shape_line" onclick="drawLine(6)"><button>line</button></li>
+					<li
+					id="shape_arc" onclick="drawArc(7)"><button>arc</button></li>
+					<li
+					id="shape_rect" onclick="drawRect(8)"><button>rect</button></li>
+					<li
+					id="shape_poly" onclick="drawPloy(9)"><button>poly</button></li>
+					<li
+					id="shape_arcfill" onclick="drawArcFill(10)"><button>arcfill</button></li>
+					<li
+					id="shape_rectfill" onclick="drawRectFill(11)"><button>rectfill</button></li>
+				</ul>
+			</li>
+			<li>
+				<h3>lineWidth</h3>
+				<hr>
+				<ul class="toolbar">
+					<li id="width_1" onclick="setlineWidth(0)"><button>1</button></li>
+					<li id="width_3" onclick="setlineWidth(1)"><button>3</button></li>
+					<li id="width_5" onclick="setlineWidth(2)"><button>5</button></li>
+					<li id="width_8" onclick="setlineWidth(3)"><button>8</button></li>
+				</ul>
+			</li>
+			<li>
+				<h3>color</h3>
+				<hr>
+				<ul class="toolbar">
+					<li id="C000" onclick="setColor(0)"><button style="background:#000;">###</button></li>
+					<li id="C111" onclick="setColor(1)"><button style="background:#111;">###</button></li>
+					<li id="C222" onclick="setColor(2)"><button style="background:#222;">###</button></li>
+					<li id="C333" onclick="setColor(3)"><button style="background:#333;">###</button></li>
+					<li id="C444" onclick="setColor(4)"><button style="background:#444;">###</button></li>
+					<li id="Cbbb" onclick="setColor(5)"><button style="background:#bbb;">###</button></li>
+					<li id="Cccc" onclick="setColor(6)"><button style="background:#ccc;">###</button></li>
+					<li id="Cddd" onclick="setColor(7)"><button style="background:#ddd;">###</button></li>
+					<li id="Ceee" onclick="setColor(8)"><button style="background:#eee;">###</button></li>
+					<li id="Cfff" onclick="setColor(9)"><button style="background:#fff;">###</button></li>
+				</ul>
+			</li>
+		</ul>
+		<canvas id="canvas" width="880" height="400">your bower cannot support canvas</canvas>
+	</section>
+	<footer id="footer">
+		<small>copyright 2015 wodrow(wodrow451611cv@gmail.com)</small>
+	</footer>
+	<script>
+	var canvas = $("#canvas")[0]
+	var cxt = canvas.getContext("2d")
+	// get tool button
+	var Brush = $("#means_brush")[0]
+	var Eraser = $("#means_eraser")[0]
+	var Paint = $("#means_paint")[0]
+	var Straw = $("#means_straw")[0]
+	var Text_ = $("#means_text")[0]
+	var Magnifier = $("#means_magnifier")[0]
+	// get shape button
+	var Line = $("#shape_line")[0]
+	var Arc = $("#shape_arc")[0]
+	var Rect = $("#shape_rect")[0]
+	var Poly = $("#shape_poly")[0]
+	var ArcFill = $("#shape_arcfill")[0]
+	var RectFill = $("#shape_rectfill")[0]
+	// 12 tools in array
+	var actions = [Brush,Eraser,Paint,Straw,Text_,Magnifier,Line,Arc,Rect,Poly,ArcFill,RectFill]
+	// list all button fun
+	function setStatus (Arr,num,type) {
+		for (var i = 0; i < Arr.length; i++) {
+			if (i==num) {
+				Arr[i].style.background = "yellow"
+			}else{
+				Arr[i].style.background = "#ccc"
+			}
+		}
+	}
+	function drawBrush (num) {
+		setStatus(actions,num,1)
+		var flag = 0 // check mouse on
+		canvas.onmousedown = function (e) {
+			e = window.event||e
+			var X = e.pageX - this.offsetLeft
+			var Y = e.pageY - this.offsetTop
+			cxt.beginPath()
+			cxt.moveTo(X,Y)
+			flag = 1
+		}
+		canvas.onmousemove = function (e){
+			e = window.event||e
+			var X = e.pageX - this.offsetLeft
+			var Y = e.pageY - this.offsetTop
+			if (flag) {
+				cxt.lineTo(X,Y)
+				cxt.stroke()
+			}
+		}
+		canvas.onmouseup = function (e) {
+			flag = 0
+			cxt.closePath()
+		}
+		canvas.onmouseout = function (e) {
+			flag = 0
+		}
+	}
+	function drawEraser (num) {
+		setStatus(actions,num,1)
+	}
+	function drawPaint (num) {
+		setStatus(actions,num,1)
+	}
+	function drawStraw (num) {
+		setStatus(actions,num,1)
+	}
+	function drawText (num) {
+		setStatus(actions,num,1)
+	}
+	function drawMagnifier (num) {
+		setStatus(actions,num,1)
+	}
+	function drawLine (num) {
+		setStatus(actions,num,1)
+	}
+	function drawArc (num) {
+		setStatus(actions,num,1)
+	}
+	function drawRect (num) {
+		setStatus(actions,num,1)
+	}
+	function drawPloy (num) {
+		setStatus(actions,num,1)
+	}
+	function drawArcFill (num) {
+		setStatus(actions,num,1)
+	}
+	function drawRectFill (num) {
+		setStatus(actions,num,1)
+	}
+	//get line width
+	var Line_1 = $("#width_1")[0]
+	var Line_3 = $("#width_3")[0]
+	var Line_5 = $("#width_5")[0]
+	var Line_8 = $("#width_8")[0]
+	var widths = [Line_1,Line_3,Line_5,Line_8]
+	function setlineWidth (num) {
+		setStatus(widths,num,1)
+		switch(num){
+			case 0:
+			cxt.lineWidth = 1;
+			break;
+			case 1:
+			cxt.lineWidth = 3;
+			break;
+			case 2:
+			cxt.lineWidth = 5;
+			break;
+			case 3:
+			cxt.lineWidth = 8;
+			break;
+		}
+	}
+	//get color
+	var Color_0 = $("#C000")[0]
+	var Color_1 = $("#C111")[0]
+	var Color_2 = $("#C222")[0]
+	var Color_3 = $("#C333")[0]
+	var Color_4 = $("#C444")[0]
+	var Color_5 = $("#Cbbb")[0]
+	var Color_6 = $("#Cccc")[0]
+	var Color_7 = $("#Cddd")[0]
+	var Color_8 = $("#Ceee")[0]
+	var Color_9 = $("#Cfff")[0]
+	var colors = [Color_0,Color_1,Color_2,Color_3,Color_4,Color_5,Color_6,Color_7,Color_8,Color_9]
+	function setColor (num) {
+		setStatus(colors,num,1)
+	}
+	drawBrush(0)
+	setlineWidth(0)
+	setColor(0)
+	</script>
+</body>
+</html>

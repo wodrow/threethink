@@ -1,0 +1,99 @@
+<?php  
+$c = 0;
+$px = 0;
+$py = 0;
+?>
+<table class="table table-bordered table-hover table-responsive" model="{$model_name}">
+	<thead>
+		<tr trid="{$c}">
+			<th px="{$px++}" py="0">
+				<input prid="{$c++}" pvid="0" type="checkbox"></th>
+			<?php for($i=0;$i<count($field_keys);$i++){ ?>
+			<?php if (find_binary_checked($field_show_type[$field_keys[$i]],1)): ?>
+			<th px="{$px++}" py="0">
+				{$field_alias[$field_keys[$i]]?$field_alias[$field_keys[$i]]:$field_keys[$i]}
+			</th>
+			<?php endif; ?>
+			<?php } ?></tr>
+	</thead>
+	<tbody>
+		<?php foreach ($table_info as $k =>
+		$v): ?>
+		<tr trid="{$c}" dataid="{$v[id]}">
+			<?php $px = 0;$py+=1; ?>
+			<td px="{$px++}" py="{$py}">
+				<input prid="{$c++}" pvid="{$v[id]}" type="checkbox"></td>
+			<?php for($i=0;$i<count($field_keys);$i++){ ?>
+			<?php if (find_binary_checked($field_show_type[$field_keys[$i]],1)): ?>
+			<td px="{$px++}" py="{$py}">{:text_show($v[$field_keys[$i]])}</td>
+			<?php endif; ?>
+			<?php } ?></tr>
+		<?php endforeach; ?></tbody>
+</table>
+{$page}
+<br>
+<hr>
+<script>
+function table_control(table_show_control){   
+    default_table_show_control = {
+		'page_first_class':'btn btn-info',
+		'page_first_text':'首页',
+		'page_end_class':'btn btn-info',
+		'page_end_text':'尾页',
+		'page_prev_class':'btn btn-default',
+		'page_prev_text':'上一页',
+		'page_next_class':'btn btn-default',
+		'page_next_text':'下一页',
+		'page_num_class':'btn btn-default',
+		'page_current_class':'btn btn-success',
+		'table_head_css':{
+			'background':'#cccccc'
+		},
+		'list_table_show':{
+			'background':'#dddddd'
+		}
+	} 
+    $.extend(default_table_show_control,table_show_control);  
+    $("a.first").addClass(default_table_show_control.page_first_class)
+	$("a.first").text(default_table_show_control.page_first_text)
+	$("a.end").addClass(default_table_show_control.page_end_class)
+	$("a.end").text(default_table_show_control.page_end_text)
+	$("a.prev").addClass(default_table_show_control.page_prev_class)
+	$("a.prev").text(default_table_show_control.page_prev_text)
+	$("a.next").addClass(default_table_show_control.page_next_class)
+	$("a.next").text(default_table_show_control.page_next_text)
+	$("a.num").addClass(default_table_show_control.page_num_class)
+	$("span.current").addClass(default_table_show_control.page_current_class)
+	$("tr[trid=0]").css(default_table_show_control.table_head_css)
+	$(".list_table_show").css(default_table_show_control.list_table_show)  
+}
+jQuery(document).ready(function($) {
+	//checkbox
+	$("tr[trid!=0]").each(function(index, el) {
+		$(this).on('click', function(event) {
+			// event.preventDefault();
+			event.stopPropagation()
+			var trid = $(this).attr('trid')
+			$("input[prid="+trid+"]").trigger('click')
+		});
+	});
+	$("input[prid!=0]").on('click', function(event) {
+		// event.preventDefault();
+		event.stopPropagation()
+	});
+	$("input[prid=0]").click(function(event) {
+		// event.preventDefault();
+		// event.stopPropagation()
+		if ($(this)[0].checked==true) {
+			$("input[prid!=0]").each(function(index, el) {
+				$(this)[0].checked=true
+			});
+		}else{
+			$("input[prid!=0]").each(function(index, el) {
+				$(this)[0].checked=false
+			});
+		}
+	});
+	
+});
+</script>

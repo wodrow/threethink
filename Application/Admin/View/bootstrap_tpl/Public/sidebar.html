@@ -1,0 +1,50 @@
+<?php 
+/**
+ * 生成菜单树
+ * @param array $menus array_tree
+ * @param string $_space 空格组
+ * @param string $result ''
+ * @return string  $result 菜单html代码
+ * @author wodrow <wodrow451611cv@gmail.com>
+ */
+function show_sidebar($menus,$_space='',$result='')
+{
+	foreach ($menus as $k => $v) {
+		if ($v[_child]) {
+			$result .= "<li role='presentation'>".
+                    "<a href='#".wodrow_encrypt($v[url])."' class='nav-header collapsed' data-toggle='collapse'>".$_space.
+                    	"<i class='".$v[icon]."'></i>&nbsp;&nbsp;".$v[name]."<span class='pull-right glyphicon glyphicon-chevron-down'></span>".
+                    "</a>".
+            		"<ul id='".wodrow_encrypt($v[url])."' class='nav nav-list collapse secondmenu' style='height: 0px;'>".
+            			show_sidebar($v[_child],$_space."&nbsp;&nbsp;&nbsp;&nbsp;").
+            		"</ul>";
+                "</li>";
+		}else{
+			$result .= "<li role='presentation' id='".wodrow_encrypt($v[url])."'>".
+                    "<a href='".U($v[url])."'>".$_space."<i class='".$v[icon]."'></i>&nbsp;&nbsp;".$v[name]."</a>".
+                "</li>";
+		}
+	}
+	return $result;
+}
+?>
+
+<ul class="nav nav-pills nav-stacked">
+
+    {:show_sidebar($tree_menus,'')}
+
+    <?php for ($i=0; $i < count($parent_menus)-1; $i++) { ?>
+        <script>
+        jQuery(document).ready(function($) {
+            $("a[href='#{:wodrow_encrypt($parent_menus[$i][url])}']").trigger('click')
+        });
+        </script>
+    <?php } ?>
+
+    <script>
+    jQuery(document).ready(function($) {
+        $("#{:wodrow_encrypt($parent_menus[$i][url])}").css('background', '#00FF00');
+    });
+    </script>
+
+</ul>

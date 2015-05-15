@@ -1,0 +1,120 @@
+<?php 
+if (!$table_info&&!I("post.table_search")) {
+	$is_display = none;
+}
+?>
+<nav class="list_table_show navbar navbar-default hidden-xs">
+	<div class="container-fluid">
+		<!-- Brand and toggle get grouped for better mobile display -->
+		<div class="navbar-header">
+			<a class="navbar-brand">
+				总计数据&nbsp;
+				<span class="badge"><?php if (I("post.table_search")): ?>
+					{:count($table_info)}
+				<?php else: ?>
+					{$count}
+				<?php endif; ?></span>
+				&nbsp;条
+			</a>
+		</div>
+
+		<!-- Collect the nav links, forms, and other content for toggling -->
+		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+			<form class="navbar-form navbar-left">
+				<div class="btn-toolbar" role="toolbar" >
+					<div class="btn-group" role="group" >
+						<button type="button" class="data_add btn btn-default">新增</button>
+						<button type="button" class="data_edit btn btn-default" style="display:{$is_display};">编辑</button>
+						<button type="button" class="data_del btn btn-default" style="display:{$is_display};">删除</button>
+					</div>
+				</div>
+			</form>
+
+			<form class="navbar-form navbar-right" role="search" action="" method="post" style="display:{$is_display};" id="data_search_form">
+				<div class="col-lg-12">
+					<div class="input-group">
+						<div class="input-group-btn">
+							<button type="button" class="shai_xuan_zhi btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+								<?php if ($field_alias[$field_keys[0]]): ?>
+								{$field_alias[$field_keys[0]]}
+								<?php else: ?>
+								{$field_keys[0]}
+								<?php endif; ?></button>
+							<ul class="dropdown-menu" role="menu">
+								<?php foreach ($field_keys as $k =>
+								$v): ?>
+								<li>
+									<?php if (find_binary_checked($field_show_type[$v],1)): ?>
+									<a class="shai_xuan" where="{$v}">
+									{$field_alias[$v]}
+									</a>
+									<?php endif; ?>
+								</li>
+								<?php endforeach; ?></ul>
+						</div>
+						<!-- /btn-group -->
+						<input type="text" class="form-control" aria-label="" name="search_value"></div>
+					<!-- /input-group -->
+					<input type="hidden" name="field_where" value="{$field_keys[0]}">
+					<input type="submit" class="btn btn-default" name="table_search" value="搜索"></div>
+				<!-- /.col-lg-6 -->
+			</form>
+			<?php if (I("post.table_search")): ?>
+				<script>
+				jQuery(document).ready(function($) {
+					var a = '{:I("post.field_where")}'
+					var b = $(".shai_xuan[where="+a+"]").text()
+					var c = "{:I('post.search_value')}"
+					$(".shai_xuan_zhi").text(b)
+					$("input[name=field_where]").val(a)
+					$("input[name=search_value]").val(c)
+				});
+				</script>
+			<?php endif; ?>
+		</div>
+	</div>
+</nav>
+<script>
+jQuery(document).ready(function($) {
+	// data add
+	$(".data_add").on('click',function function_name (e) {
+		location.href = "{:U('?add=true&success_url='.ACTION_NAME)}"
+	})
+	// data edit
+	$(".data_edit").on('click',function function_name (e) {
+		var ids = []
+		var id  = 0;
+		var count = 0;
+		$('input[prid!=0]').each(function (index,el) {
+			if ($(this)[0].checked==true) {
+				id = ids[count] = $(this).attr('pvid')
+				count++
+			}
+		})
+		if (count!==1) {
+			alert("place select one data")
+			return false
+		};
+		location.href = "{:U()}?edit=true&edit_id="+ids[0]
+	})
+	// data delete
+	$(".data_del").on('click',function function_name (e) {
+		var ids = {}
+		$('input[prid!=0]').each(function (index,el) {
+			if ($(this)[0].checked==true) {
+				ids[index] = $(this).attr('pvid')
+			}
+		})
+		// alert(ids)
+		var model_name = "{$model_name}"
+		$.post("{:U('data_del')}",{'model_name':model_name,'ids':ids},function(data){
+    		alert(data)
+		});
+	})
+	// 筛选
+	$(".shai_xuan").on('click', function(event) {
+		$("button.shai_xuan_zhi").text($(this).text())
+		$("input[name=field_where]").val($(this).attr('where'))
+	});
+});
+</script>

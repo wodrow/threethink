@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<script src="http://cdn.bootcss.com/jquery/1.11.2/jquery.min.js"></script>
+	<title>canvas</title>
+</head>
+<body>
+	<video id="video1" controls width="270">
+  		<source src="http://www.w3school.com.cn//example/html5/mov_bbb.mp4" type='video/mp4'>
+  		<source src="http://www.w3school.com.cn//example/html5/mov_bbb.ogg" type='video/ogg'>
+  		<source src="http://www.w3school.com.cn//example/html5/mov_bbb.webm" type='video/webm'>
+	</video>
+	<div>canvas1</div>
+	<canvas id="canvas1" width="200px" height="200px" style="background:#ccc;">你的浏览器不支持canvas</canvas>
+	<canvas id="canvas2" width="200px" height="200px" style="background:#ccc;">你的浏览器不支持canvas</canvas>
+	<script>
+	var canvas1 = $("#canvas1")[0]
+	var cxt = canvas1.getContext("2d") // 设置绘图环境
+	cxt.beginPath()
+	cxt.lineWidth = 10
+	cxt.strokeStyle = "#666";
+	cxt.moveTo(20,20)
+	cxt.lineTo(100,20)
+	cxt.stroke()
+	cxt.closePath()
+
+	cxt.beginPath()
+	cxt.lineWidth = 2
+	cxt.strokeStyle = "#333";
+	cxt.arc(50,50,20,0,360,false)
+	cxt.stroke()
+	cxt.closePath()
+
+	cxt.beginPath()
+	cxt.lineWidth = 5
+	cxt.strokeStyle = "blue"
+	cxt.arc(100,50,20,0,360,false)
+	cxt.stroke()
+	cxt.closePath()
+	cxt.beginPath()
+	cxt.lineWidth = 5
+	cxt.fillStyle = "red"
+	cxt.arc(100,50,20,0,360,false)
+	cxt.fill()
+	cxt.closePath()
+
+	cxt.beginPath()
+	cxt.strokeRect(50,100,20,20)
+	cxt.fillStyle = "green"
+	cxt.fillRect(50,100,20,20)
+	cxt.closePath()
+
+	cxt.beginPath()
+	cxt.font = "32px 黑体"
+	cxt.lineWidth = 2
+	cxt.fillText("test",50,150)
+	cxt.strokeText("test",50,130)
+	cxt.closePath()
+
+	var img = new Image()
+	img.src = "__UPLOADS__/images/Test/20100827191227-901930746.jpg"
+	cxt.drawImage(img,100,100,100,100) // chrome no support
+
+	cxt.beginPath()
+	cxt.moveTo(5,5)
+	cxt.lineTo(30,5)
+	cxt.lineTo(30,30)
+	cxt.lineTo(5,5)
+	cxt.fill()
+	cxt.closePath()	
+
+	$(function() {  
+	    var $my_canvas=$("#canvas2");  
+	    var my_canvas=$my_canvas[0];  
+	    var context=my_canvas.getContext("2d");   
+	    preImage("footprint.jpg",function(){  
+	        context.drawImage(this,10,10,20,20);  
+	    });  
+	});  
+	  
+	function preImage(url,callback){  
+	    var img = new Image();  
+	    img.src = "__UPLOADS__/images/Test/20100827191227-901930746.jpg";  
+	     
+	    if (img.complete) { 
+	    	// 如果图片已经存在于浏览器缓存，直接调用回调函数  
+	        callback.call(img);  
+	        return; // 直接返回，不用再处理onload事件  
+	    }  
+	  
+	    img.onload = function () { 
+	    	//图片下载完毕时异步调用callback函数。  
+	        callback.call(img);//将回调函数的this替换为Image对象  
+	    };  
+	}
+
+	jQuery(document).ready(function($) {
+		// Stuff to do as soon as the DOM is ready;
+	});
+	</script>
+	
+</body>
+</html>

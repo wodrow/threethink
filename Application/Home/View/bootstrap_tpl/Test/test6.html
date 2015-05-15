@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<script src="http://cdn.bootcss.com/jquery/1.11.2/jquery.min.js"></script>
+	<title>clock</title>
+</head>
+<body>
+	<canvas id="clock" width="600px" height="600px" style="background:#fff;">your bower cannot support canvas</canvas>
+	<script>
+	var clock = $("#clock")[0]
+	var cxt = clock.getContext("2d")
+	function drawClock(){
+		//清除画布
+		cxt.clearRect(0,0,600,600)
+		//获取时间
+		var now = new Date()
+		var sec = now.getSeconds()
+		var min = now.getMinutes()
+		var hour = now.getHours()
+		hour = hour>12?hour-12:hour
+		hour = hour+min/60
+		min = min + sec/60
+		//表盘
+		cxt.beginPath()
+		cxt.lineWidth = 2
+		cxt.strokeStyle = "black";
+		cxt.arc(300,300,200,0,360*Math.PI/180,false)
+		cxt.stroke()
+		cxt.closePath()
+		//刻度
+		//时刻度
+		for (var i=0; i<12; i++) {
+			cxt.save()
+			cxt.lineWidth = 5
+			cxt.strokeStyle = "#000"
+			cxt.translate(300,300) //center
+			cxt.rotate(i*30*Math.PI/180) 
+			cxt.beginPath()
+			cxt.moveTo(0,-180)
+			cxt.lineTo(0,-200)
+			cxt.stroke()
+			cxt.closePath()
+			cxt.restore()
+		};
+		//分刻度
+		for (var i=0;i<60;i++) {
+			cxt.save()
+			cxt.lineWidth = 2
+			cxt.strokeStyle = "#333"
+			cxt.translate(300,300)
+			cxt.rotate(i*6*Math.PI/180)
+			cxt.beginPath()
+			cxt.moveTo(0,-190)
+			cxt.lineTo(0,-200)
+			cxt.stroke()
+			cxt.closePath()
+			cxt.restore()
+		};
+		//时针
+		cxt.save()
+		cxt.lineWidth = 10
+		cxt.strokeStyle = "#000"
+		cxt.translate(300,300)
+		cxt.rotate(hour*30*Math.PI/180)
+		cxt.beginPath()
+		cxt.moveTo(0,10)
+		cxt.lineTo(0,-100)
+		cxt.stroke()
+		cxt.closePath()
+		cxt.restore()
+		//分针
+		cxt.save()
+		cxt.lineWidth = 8
+		cxt.strokeStyle = "#000"
+		cxt.translate(300,300)
+		cxt.rotate(min*6*Math.PI/180)
+		cxt.beginPath()
+		cxt.moveTo(0,15)
+		cxt.lineTo(0,-120)
+		cxt.stroke()
+		cxt.closePath()
+		cxt.restore()
+		//秒针
+		cxt.save()
+		cxt.lineWidth = 3
+		cxt.strokeStyle = "red"
+		cxt.translate(300,300)
+		cxt.rotate(sec*6*Math.PI/180)
+		cxt.beginPath()
+		cxt.moveTo(0,30)
+		cxt.lineTo(0,-170)
+		cxt.stroke()
+		cxt.closePath()
+		cxt.beginPath()
+		cxt.arc(0,0,5,0,2*Math.PI,true)
+		cxt.fillStyle = "green"
+		cxt.fill()
+		cxt.closePath()
+		cxt.beginPath()
+		cxt.arc(0,0,6,0,2*Math.PI,true)
+		cxt.lineWidth = 2
+		cxt.strokeStyle = "red"
+		cxt.stroke()
+		cxt.closePath()
+		cxt.closePath()
+		cxt.beginPath()
+		cxt.arc(0,-140,5,0,2*Math.PI,true)
+		cxt.fillStyle = "green"
+		cxt.fill()
+		cxt.closePath()
+		cxt.beginPath()
+		cxt.arc(0,-140,6,0,2*Math.PI,true)
+		cxt.lineWidth = 2
+		cxt.strokeStyle = "red"
+		cxt.stroke()
+		cxt.closePath()
+		cxt.restore()
+	}
+	//使用setInterval(代码，时间ms)让时钟动起来
+	setInterval(drawClock,1000)
+	</script>
+</body>
+</html>
